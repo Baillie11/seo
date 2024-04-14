@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Click Ecommerce SEO Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Company Logo" height="60">
+        <h1>Click Ecommerce SEO Analysis</h1>
+    </header>
+    <form method="POST">
+        Enter Website URL: <input type="text" name="url" id="url-input" required>
+        <button type="submit">Analyze</button>
+    </form>
+</body>
+</html>
+

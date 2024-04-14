@@ -1,0 +1,21 @@
+/* styles.css */
+#url-input {
+    height: 50px; /* Adjust the height as needed */
+    padding: 0 10px; /* Adds padding inside the input box for better text alignment */
+    font-size: 16px; /* Increases the font size for better readability */
+}
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+header {
+    background-color: #f8f9fa;
+    padding: 10px 20px;
+    text-align: center;
+}
+
+form {
+    margin-top: 20px;
+    text-align: center;
+}
