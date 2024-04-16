@@ -8,12 +8,13 @@
 </head>
 <body>
     <header>
-        <img src="{{ url_for('static', filename='logo.png') }}" alt="Company Logo" height="60">
-        <h1>Click Ecommerce SEO Analysis</h1>
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Company Logo" class="site-logo">
+        <h1>SEO Analysis Tool</h1>
     </header>
     <form method="POST">
-        Enter Website URL: <input type="text" name="url" id="url-input" required>
-        <button type="submit">Analyze</button>
+        <label for="url" class="url-label">Enter Website URL:</label>
+        <input type="text" name="url" id="url-input" required>
+        <button type="submit" class="submit-button">Analyse</button>
     </form>
 </body>
 </html>

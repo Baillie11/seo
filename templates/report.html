@@ -2,14 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SEO Analysis Tool</title>
+    <title>SEO Analysis Report</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='report.css') }}">
 </head>
 <body>
-    <h1>SEO Analysis Tool</h1>
-    <form method="POST">
-        Enter Website URL: <input type="text" name="url" required>
-        <button type="submit">Analyze</button>
-    </form>
+    <header>
+        <h1>SEO Analysis Report for {{ seo_data['URL'] }}</h1>
+    </header>
+    <div class="container">
+        {% if seo_data.get('Error') %}
+            <p>Error: {{ seo_data['Error'] }}</p>
+        {% else %}
+            <p>Title Found: {{ seo_data['Title'] }}</p>
+            <a href="{{ url_for('download_file', filename=pdf_filename) }}">Download PDF Report</a>
+        {% endif %}
+    </div>
 </body>
 </html>

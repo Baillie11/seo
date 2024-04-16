@@ -3,9 +3,12 @@ from bs4 import BeautifulSoup
 import requests
 import os
 from reportlab.lib.pagesizes import letter
+from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import inch
 from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import Paragraph
 from datetime import datetime
 import re
 
@@ -23,39 +26,40 @@ def perform_seo_analysis(url):
         return {'URL': url, 'Error': str(e)}
 
 # Function to create a PDF report with logo and formatted title
-def create_pdf_report(seo_data, filename=None):
-    # If filename is not provided, generate one dynamically
-    if not filename:
-        # Sanitize the URL to create a valid filename
-        website_name = re.sub(r'\W+', '', seo_data['URL'])  # Remove non-alphanumeric characters
-        # Get current date and time for the filename
-        current_time = datetime.now().strftime("%Y%m%d-%H%M%S")
-        filename = f'SEO_Report_{website_name}_{current_time}.pdf'
+def create_pdf_report(seo_data, filename='SEO_Report.pdf'):
+    c = canvas.Canvas(filename, pagesize=A4)
+    width, height = A4  # Dimensions of A4 paper
 
-    c = canvas.Canvas(filename, pagesize=letter)
-    width, height = letter  # Unpack page dimensions
+    # Styles for paragraphs
+    styles = getSampleStyleSheet()
+    title_style = styles['Heading1']
+    body_style = styles['BodyText']
 
-    # Load and insert logo
-    # Define the absolute path to the logo
-    current_directory = os.path.dirname(__file__)  # Get the directory where the script runs
-    logo_path = os.path.join(current_directory, 'static', 'logo.png')  # Build the path to the logo file
+    # Logo
+    logo_path = './static/logo.png'
     c.drawImage(logo_path, 30, height - 90, width=120, height=60, preserveAspectRatio=True, mask='auto')
 
-    # Insert title
+    # Title
     c.setFont("Helvetica-Bold", 24)
     c.setFillColor(colors.darkblue)
     c.drawString(160, height - 70, "Click Ecommerce SEO Analysis")
 
-    # Insert other data
-    c.setFont("Helvetica", 12)
-    c.setFillColor(colors.black)
-    text_y_position = height - 130
-    c.drawString(100, text_y_position, f"SEO Report for: {seo_data['URL']}")
-    text_y_position -= 20
-    c.drawString(100, text_y_position, f"Title: {seo_data.get('Title', 'No Title Found')}")
+    # SEO Report Title
+    report_title = f"SEO Report for: {seo_data['URL']}"
+    title_para = Paragraph(report_title, title_style)
+    title_para.wrapOn(c, width - 80, height)  # Set width of the paragraph
+    title_para.drawOn(c, 40, height - 150)  # Draw paragraph on canvas
+
+    # Long Title Description
+    long_title = seo_data.get('Title', 'No Title Found')
+    long_title_para = Paragraph(long_title, body_style)
+    long_title_para.wrapOn(c, width - 80, height)  # Wrap and set width
+    long_title_para.drawOn(c, 40, height - 180)  # Adjust position as needed
 
     c.save()
     return filename
+
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
