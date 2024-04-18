@@ -20,46 +20,52 @@ def perform_seo_analysis(url, categories):
     seo_data = {'URL': url, 'Analysis Date': datetime.now().strftime("%Y-%m-%d")}
     
     if "Technical SEO" in categories:
-        # Measure page load time
         try:
             response = requests.get(url, timeout=10)  # Timeout after 10 seconds
             load_time = response.elapsed.total_seconds()
             seo_data['Page Load Time'] = f"{load_time} seconds"
+            
+            # Assign a rating based on the load time
+            if load_time < 2:
+                seo_data['Load Time Rating'] = "Good"
+            elif load_time < 5:
+                seo_data['Load Time Rating'] = "Average"
+            else:
+                seo_data['Load Time Rating'] = "Poor"
+                
         except requests.exceptions.RequestException as e:
             seo_data['Page Load Time'] = f"Failed to load page: {str(e)}"
-    
+            seo_data['Load Time Rating'] = "Error"
+
     return seo_data
 
 # Function to create a PDF report with logo and formatted title
 def create_pdf_report(seo_data, categories, filename=None):
     if not filename:
-        # Remove 'http://' or 'https://' from the URL
         clean_url = seo_data['URL'].replace('http://', '').replace('https://', '')
-        # Sanitize the URL to create a valid filename component
         sanitized_url = re.sub(r'[^\w\s-]', '', clean_url).replace(' ', '_').replace('.', '_')
-        # Construct the filename using the format SEO_Report_for_<URL>
-        filename = f'SEO_Report_for_{sanitized_url}.pdf'
+        filename = f"SEO_Report_for_{sanitized_url}.pdf"
 
-    width, height = A4
     c = canvas.Canvas(filename, pagesize=A4)
-    
-    # Add the logo at the top center
+    width, height = A4
+
+    # Add logo
     logo_path = './static/logo.jpg'
-    c.drawImage(logo_path, (width - 200) / 2, height - 120, width=200, height=100, preserveAspectRatio=True, mask='auto')
-
-    # Header Title
-    c.setFont("Helvetica-Bold", 18)
-    c.setFillColor(colors.black)
-    c.drawCentredString(width / 2, height - 150, "SEO Analysis Report")
-
-    # Technical SEO Analysis Section
-    c.setFont("Helvetica-Bold", 14)  # Bold for section heading
-    c.drawString(30, height - 180, "Technical SEO Analysis:")
+    c.drawImage(logo_path, (width - 200) / 2, height - 80, width=200, height=50, preserveAspectRatio=True, mask='auto')
     
-    # Check if Page Load Time is in the data and display it
-    if 'Page Load Time' in seo_data:
-        c.setFont("Helvetica", 12)
-        c.drawString(50, height - 200, f"Page Load Time: {seo_data['Page Load Time']}")
+    # Add header
+    c.setFont("Helvetica-Bold", 16)
+    c.drawCentredString(width / 2, height - 100, "SEO Analysis Report")
+    
+    # Technical SEO Analysis section
+    c.setFont("Helvetica-Bold", 14)
+    c.drawString(30, height - 140, "Technical SEO Analysis:")
+    c.setFont("Helvetica", 12)
+    c.drawString(50, height - 160, f"Page Load Time: {seo_data.get('Page Load Time', 'Not available')}")
+
+    # Separate column for rating, in italics
+    c.setFont("Helvetica-Oblique", 12)  # Italic font for rating
+    c.drawString(250, height - 160, f"Rating: {seo_data.get('Load Time Rating', 'Not rated')}")
 
     c.save()
     return filename
