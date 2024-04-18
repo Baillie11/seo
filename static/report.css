@@ -1,49 +1,53 @@
-/* report.css */
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f9;
-    margin: 0;
+    font-family: Arial, sans-serif;
     padding: 20px;
-    color: #333;
-}
-
-header {
-    background-color: #007BFF;
-    color: #ffffff;
-    padding: 10px 20px;
-    text-align: center;
-}
-
-.container {
-    max-width: 800px;
-    margin: auto;
-    background: white;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-p {
-    font-size: 16px;
     line-height: 1.6;
+    display: flex;          /* Enable flexbox for the body */
+    flex-direction: column; /* Stack children vertically */
+    align-items: center;    /* Center-align the flex items horizontally */
 }
 
-a {
-    display: inline-block;
+h1 {
+    color: darkblue;
+    margin-bottom: 20px;
+    text-align: center; /* Center the header text */
+}
+
+h3 {
+    color: navy;
     margin-top: 20px;
+    text-align: center; /* Center the sub-header text */
+}
+
+div.category-content {
+    background-color: #f3f3f3;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px 0;        /* Adds space above and below each category content */
+    width: 100%;           /* Full width to fill the parent */
+    max-width: 600px;      /* Maximum width for better readability */
+    box-sizing: border-box; /* Ensures padding doesn't affect width calculation */
+}
+
+.button {
+    display: inline-block;
     padding: 10px 20px;
-    background-color: #28a745;
+    margin-top: 20px;
+    background-color: #007bff;
     color: white;
     text-decoration: none;
     border-radius: 5px;
+    text-align: center;
+    cursor: pointer; /* Indicates that the element is clickable */
 }
 
-a:hover {
-    background-color: #218838;
+.button:hover {
+    background-color: #0056b3;
 }
 
-@media (max-width: 768px) {
-    .container {
-        width: 90%;
-        padding: 10px;
-    }
+.form-return {
+    width: 100%;           /* Full width to align with other content */
+    max-width: 600px;      /* Match the max width of category content */
+    display: flex;         /* Use flexbox for easy centering */
+    justify-content: center; /* Center the button horizontally */
 }

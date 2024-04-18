@@ -2,28 +2,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SEO Analysis Report</title>
+    <title>SEO Report</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='report.css') }}">
 </head>
 <body>
-    <header>
-        <h1>SEO Analysis Report for {{ seo_data['URL'] }}</h1>
-    </header>
-    <!-- Part of report.html -->
-    <div class="container">
-        <h2>Analysis for {{ seo_data['URL'] }}</h2>
-        <h3>Categories Analyzed:</h3>
-        <ul>
-            {% for category in categories %}
-            <li>{{ category }}</li>
-            {% endfor %}
-        </ul>
-    
-        <!-- Button to return to the form page -->
-        <a href="/" class="new-report-button">Complete Another Report</a>
-        
-        <!-- Continue with the rest of your report details -->
-    </div>
+    <h1>SEO Report for {{ seo_data['URL'] }}</h1>
 
+    {% for category in categories %}
+        <h3>{{ category }}</h3>
+        <div class="category-content">
+            {% if category == 'Technical SEO' %}
+                <p>Page Load Time: {{ seo_data.get('Page Load Time', 'Not available') }}</p>
+                <p>Load Time Rating: {{ seo_data.get('Load Time Rating', 'Not rated') }}</p>
+            {% elif category == 'Content SEO' %}
+                <!-- Display Content SEO specific analytics here -->
+            {% elif category == 'On-Page SEO' %}
+                <!-- Display On-Page SEO specific analytics here -->
+            {% endif %}
+        </div>
+    {% endfor %}
+    
+    <!-- Button to return to the form page -->
+    <div class="form-return">
+        <a href="/" class="button">Complete Another Report</a>
+    </div>
 </body>
 </html>

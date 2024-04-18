@@ -44,7 +44,7 @@ def create_pdf_report(seo_data, categories, filename=None):
     if not filename:
         clean_url = seo_data['URL'].replace('http://', '').replace('https://', '')
         sanitized_url = re.sub(r'[^\w\s-]', '', clean_url).replace(' ', '_').replace('.', '_')
-        filename = f"SEO_Report_for_{sanitized_url}.pdf"
+        filename = f"SEO_Report_for-{sanitized_url}.pdf"
 
     c = canvas.Canvas(filename, pagesize=A4)
     width, height = A4
