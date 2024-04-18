@@ -41,12 +41,20 @@ def perform_seo_analysis(url, categories):
 
 # Function to create a PDF report with logo and formatted title
 def create_pdf_report(seo_data, categories, filename=None):
+    # Ensure the Reports folder exists
+    reports_folder = 'Reports'
+    if not os.path.exists(reports_folder):
+        os.makedirs(reports_folder)
+    
     if not filename:
         clean_url = seo_data['URL'].replace('http://', '').replace('https://', '')
         sanitized_url = re.sub(r'[^\w\s-]', '', clean_url).replace(' ', '_').replace('.', '_')
         filename = f"SEO_Report_for-{sanitized_url}.pdf"
+    
+    # Append the directory to the filename
+    full_path = os.path.join(reports_folder, filename)
 
-    c = canvas.Canvas(filename, pagesize=A4)
+    c = canvas.Canvas(full_path, pagesize=A4)
     width, height = A4
 
     # Add logo
@@ -56,32 +64,27 @@ def create_pdf_report(seo_data, categories, filename=None):
     # Add header
     c.setFont("Helvetica-Bold", 16)
     c.drawCentredString(width / 2, height - 100, "SEO Analysis Report")
-    
+
+    # Add 'For:' and website URL
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(30, height - 120, f"For: {seo_data['URL']}")
+
+    # Add current date in dd/mm/yyyy format
+    current_date = datetime.now().strftime('%d/%m/%Y')
+    c.drawString(30, height - 140, f"Report Date: {current_date}")
+
     # Technical SEO Analysis section
     c.setFont("Helvetica-Bold", 14)
-    c.drawString(30, height - 140, "Technical SEO Analysis:")
+    c.drawString(30, height - 170, "Technical SEO Analysis:")
     c.setFont("Helvetica", 12)
-    c.drawString(50, height - 160, f"Page Load Time: {seo_data.get('Page Load Time', 'Not available')}")
+    c.drawString(50, height - 190, f"Page Load Time: {seo_data.get('Page Load Time', 'Not available')}")
 
     # Separate column for rating, in italics
     c.setFont("Helvetica-Oblique", 12)  # Italic font for rating
-    c.drawString(250, height - 160, f"Rating: {seo_data.get('Load Time Rating', 'Not rated')}")
+    c.drawString(250, height - 190, f"Rating: {seo_data.get('Load Time Rating', 'Not rated')}")
 
-    c.save()
-    return filename
-
-    # Prepare to add text
-    c.setFont("Helvetica-Bold", 18)
-    c.drawCentredString(width / 2, height - 140, "SEO Analysis Report")
-
-    # Example of adding additional text below
-    c.setFont("Helvetica", 12)
-    c.drawString(30, height - 160, f"Website: {seo_data['URL']}")
-    c.drawString(30, height - 180, f"Report Date: {datetime.now().strftime('%Y-%m-%d')}")
-
-    c.save()
-    return filename
-
+    c.save()  # Save the document
+    return full_path
 
 
 @app.route('/', methods=['GET', 'POST'])
