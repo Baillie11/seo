@@ -9,13 +9,21 @@
     <header>
         <h1>SEO Analysis Report for {{ seo_data['URL'] }}</h1>
     </header>
+    <!-- Part of report.html -->
     <div class="container">
-        {% if seo_data.get('Error') %}
-            <p>Error: {{ seo_data['Error'] }}</p>
-        {% else %}
-            <p>Title Found: {{ seo_data['Title'] }}</p>
-            <a href="{{ url_for('download_file', filename=pdf_filename) }}">Download PDF Report</a>
-        {% endif %}
+        <h2>Analysis for {{ seo_data['URL'] }}</h2>
+        <h3>Categories Analyzed:</h3>
+        <ul>
+            {% for category in categories %}
+            <li>{{ category }}</li>
+            {% endfor %}
+        </ul>
+    
+        <!-- Button to return to the form page -->
+        <a href="/" class="new-report-button">Complete Another Report</a>
+        
+        <!-- Continue with the rest of your report details -->
     </div>
+
 </body>
 </html>

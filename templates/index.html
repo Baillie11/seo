@@ -9,13 +9,30 @@
 <body>
     <header>
         <img src="{{ url_for('static', filename='logo.png') }}" alt="Company Logo" class="site-logo">
-        <h1>SEO Analysis Tool</h1>
+        <h1>Click Ecommerce SEO Analysis</h1>
     </header>
-    <form method="POST">
-        <label for="url" class="url-label">Enter Website URL:</label>
-        <input type="text" name="url" id="url-input" required>
-        <button type="submit" class="submit-button">Analyse</button>
+    
+    <div class="form-container">
+        <form method="POST">
+            <label for="url">Enter Website URL:</label>
+            <input type="text" name="url" id="url-input" required>
+            
+            <fieldset class="checklist">
+                <legend>Select SEO Categories to Analyze:</legend>
+                <label><input type="checkbox" name="categories" value="Technical SEO" checked> Technical SEO <span class="checkmark"></span></label>
+                <label><input type="checkbox" name="categories" value="On-Page SEO" checked> On-Page SEO <span class="checkmark"></span></label>
+                <label><input type="checkbox" name="categories" value="Off-Page SEO" checked> Off-Page SEO <span class="checkmark"></span></label>
+                <label><input type="checkbox" name="categories" value="User Experience" checked> User Experience (UX) <span class="checkmark"></span></label>
+                <label><input type="checkbox" name="categories" value="Content SEO" checked> Content SEO <span class="checkmark"></span></label>
+                <label><input type="checkbox" name="categories" value="Security" checked> Security <span class="checkmark"></span></label>
+            </fieldset>
+            
+            <button type="submit" class="submit-button">Analyze</button>
+        </form>
+    </div>
+    
     </form>
+    
 </body>
 </html>
 
