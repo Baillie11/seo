@@ -14,10 +14,12 @@
             {% if category == 'Technical SEO' %}
                 <p>Page Load Time: {{ seo_data.get('Page Load Time', 'Not available') }}</p>
                 <p>Load Time Rating: {{ seo_data.get('Load Time Rating', 'Not rated') }}</p>
-            {% elif category == 'Content SEO' %}
-                <!-- Display Content SEO specific analytics here -->
             {% elif category == 'On-Page SEO' %}
-                <!-- Display On-Page SEO specific analytics here -->
+                <p>Title Tag: {{ seo_data.get('Title Tag', 'No Title Found') }}</p>
+                <p>Title Length Status: {{ seo_data.get('Title Length Status', 'Not checked') }}</p>
+                <p>Keyword Presence: {{ seo_data.get('Keyword Presence', 'Not checked') }}</p>
+                <!-- Optionally display duplication check result if implemented -->
+                <!-- <p>Title Duplication: {{ seo_data.get('Title Duplication', 'Not checked') }}</p> -->
             {% endif %}
         </div>
     {% endfor %}
