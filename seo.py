@@ -23,14 +23,18 @@ def index():
     if request.method == 'POST':
         url = request.form['url']
         selected_categories = request.form.getlist('categories')
+        print(f"URL: {url}, Categories: {selected_categories}")  # Debugging print statement
         seo_data = perform_seo_analysis(url, selected_categories)
+        print(f"SEO Data: {seo_data}")  # Debugging print statement
         pdf_filename = create_pdf_report(seo_data, selected_categories)
+        print(f"PDF Filename: {pdf_filename}")  # Debugging print statement
         return render_template('report.html', seo_data=seo_data, pdf_filename=pdf_filename, categories=selected_categories)
     return render_template('index.html')
+
 
 @app.route('/download/<path:filename>')
 def download_file(filename):
     return send_from_directory('.', filename, as_attachment=True)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000)
