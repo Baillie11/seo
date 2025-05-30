@@ -1,44 +1,110 @@
 /* report.css */
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f9;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
     margin: 0;
-    padding: 20px;
-    color: #333;
+    padding: 0;
+    background-color: #f5f5f5;
 }
 
 header {
-    background-color: #007BFF;
-    color: #ffffff;
-    padding: 10px 20px;
-    text-align: center;
-}
-
-.container {
-    max-width: 800px;
-    margin: auto;
-    background: white;
+    background-color: #fff;
     padding: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-p {
-    font-size: 16px;
-    line-height: 1.6;
+.site-logo {
+    width: 150px;
+    height: auto;
+    margin-bottom: 10px;
 }
 
-a {
+.report-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.report-header {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #eee;
+}
+
+.download-button {
     display: inline-block;
-    margin-top: 20px;
     padding: 10px 20px;
-    background-color: #28a745;
+    background-color: #007BFF;
     color: white;
     text-decoration: none;
     border-radius: 5px;
+    margin-top: 10px;
 }
 
-a:hover {
-    background-color: #218838;
+.download-button:hover {
+    background-color: #0056b3;
+}
+
+.analysis-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}
+
+.analysis-section h3 {
+    color: #333;
+    margin-top: 0;
+}
+
+.results {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.result-item {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.result-item h4 {
+    margin-top: 0;
+    color: #007BFF;
+}
+
+.error-section {
+    background-color: #fff3f3;
+    border-left: 4px solid #dc3545;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.warning-section {
+    background-color: #fff3cd;
+    border-left: 4px solid #ffc107;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.back-link {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.back-link a {
+    color: #007BFF;
+    text-decoration: none;
+}
+
+.back-link a:hover {
+    text-decoration: underline;
 }
 
 @media (max-width: 768px) {

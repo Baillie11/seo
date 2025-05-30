@@ -2,28 +2,70 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SEO Analysis Report</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='report.css') }}">
 </head>
 <body>
     <header>
-        <h1>SEO Analysis Report for {{ seo_data['URL'] }}</h1>
+        <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Company Logo" class="site-logo">
+        <h1>SEO Analysis Report</h1>
     </header>
-    <!-- Part of report.html -->
-    <div class="container">
-        <h2>Analysis for {{ seo_data['URL'] }}</h2>
-        <h3>Categories Analyzed:</h3>
-        <ul>
-            {% for category in categories %}
-            <li>{{ category }}</li>
-            {% endfor %}
-        </ul>
-    
-        <!-- Button to return to the form page -->
-        <a href="/" class="new-report-button">Complete Another Report</a>
-        
-        <!-- Continue with the rest of your report details -->
-    </div>
 
+    <div class="report-container">
+        <div class="report-header">
+            <h2>Analysis Results for: {{ seo_data['URL'] }}</h2>
+            <p>Analysis Date: {{ seo_data['Analysis Date'] }}</p>
+            <a href="{{ url_for('download_file', filename=pdf_filename) }}" class="download-button">Download PDF Report</a>
+        </div>
+
+        {% if 'Error' in seo_data %}
+        <div class="error-section">
+            <h3>Error</h3>
+            <p class="error-message">{{ seo_data['Error'] }}</p>
+        </div>
+        {% else %}
+            {% for category in categories %}
+                {% if category in seo_data %}
+                <div class="analysis-section">
+                    <h3>{{ category }}</h3>
+                    <div class="results">
+                        {% for key, value in seo_data[category].items() %}
+                            <div class="result-item">
+                                <h4>{{ key }}</h4>
+                                {% if value is mapping %}
+                                    <ul>
+                                    {% for subkey, subvalue in value.items() %}
+                                        <li><strong>{{ subkey }}:</strong> {{ subvalue }}</li>
+                                    {% endfor %}
+                                    </ul>
+                                {% elif value is sequence and value is not string %}
+                                    <ul>
+                                    {% for item in value %}
+                                        <li>{{ item }}</li>
+                                    {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <p>{{ value }}</p>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+        {% if 'Security Warning' in seo_data %}
+        <div class="warning-section">
+            <h3>Security Warning</h3>
+            <p class="warning-message">{{ seo_data['Security Warning'] }}</p>
+        </div>
+        {% endif %}
+
+        <div class="back-link">
+            <a href="{{ url_for('index') }}">Analyze Another Website</a>
+        </div>
+    </div>
 </body>
 </html>
