@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Click Ecommerce SEO Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Company Logo" class="site-logo">
+        <h1>Click Ecommerce SEO Analysis</h1>
+    </header>
+    
+    <div class="form-container">
+        <form method="POST" id="seo-form">
+            <label for="url">Enter Website URL:</label>
+            <input type="text" name="url" id="url-input" required>
+            
+            <fieldset class="checklist">
+                <legend>Select SEO Categories to Analyze:</legend>
+                <label><input type="checkbox" name="categories" value="Technical SEO" checked> Technical SEO <span class="checkmark"></span></label>
+                <label><input type="checkbox" name="categories" value="On-Page SEO" checked> On-Page SEO <span class="checkmark"></span></label>
+                <label><input type="checkbox" name="categories" value="Content SEO" checked> Content SEO <span class="checkmark"></span></label>
+                <label><input type="checkbox" name="categories" value="User Experience" checked> User Experience (UX) <span class="checkmark"></span></label>
+                <label><input type="checkbox" name="categories" value="Security" checked> Security <span class="checkmark"></span></label>
+                <label><input type="checkbox" name="categories" value="Schema Markup" checked> Schema & Social Media <span class="checkmark"></span></label>
+                <label><input type="checkbox" name="categories" value="Advanced Content" checked> Advanced Content Analysis <span class="checkmark"></span></label>
+            </fieldset>
+            
+            <button type="submit" class="submit-button">Analyze</button>
+        </form>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Analyzing website...</div>
+        <div class="analysis-steps">
+            <div class="analysis-step" data-step="technical">Analyzing Technical SEO...</div>
+            <div class="analysis-step" data-step="onpage">Checking On-Page Elements...</div>
+            <div class="analysis-step" data-step="content">Analyzing Content...</div>
+            <div class="analysis-step" data-step="ux">Evaluating User Experience...</div>
+            <div class="analysis-step" data-step="security">Checking Security...</div>
+            <div class="analysis-step" data-step="schema">Analyzing Schema Markup...</div>
+            <div class="analysis-step" data-step="advanced">Performing Advanced Analysis...</div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('seo-form').addEventListener('submit', function(e) {
+            // Show loading overlay
+            const overlay = document.getElementById('loading-overlay');
+            overlay.style.display = 'flex';
+
+            // Get selected categories
+            const selectedCategories = Array.from(document.querySelectorAll('input[name="categories"]:checked'))
+                .map(cb => cb.value);
+
+            // Show relevant steps based on selected categories
+            document.querySelectorAll('.analysis-step').forEach(step => {
+                step.style.display = 'none';
+            });
+
+            // Function to show steps in sequence
+            function showStepsSequentially(steps, index = 0) {
+                if (index < steps.length) {
+                    steps[index].classList.add('active');
+                    setTimeout(() => {
+                        showStepsSequentially(steps, index + 1);
+                    }, 1000); // Show each step after 1 second
+                }
+            }
+
+            // Get only the steps for selected categories
+            const relevantSteps = Array.from(document.querySelectorAll('.analysis-step'))
+                .filter(step => {
+                    const category = step.getAttribute('data-step');
+                    return selectedCategories.some(selected => 
+                        selected.toLowerCase().includes(category.toLowerCase()));
+                });
+
+            showStepsSequentially(relevantSteps);
+        });
+    </script>
+</body>
+</html>
+

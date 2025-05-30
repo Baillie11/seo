@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SEO Analysis Report</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='report.css') }}">
+    <style>
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        .metric { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .sub-metric { margin: 10px 0 10px 20px; }
+        .rating { font-weight: bold; }
+        .rating.good { color: green; }
+        .rating.average { color: orange; }
+        .rating.poor { color: red; }
+        .error { color: red; }
+        .warning { color: orange; font-weight: bold; }
+        .button { 
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px 5px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .button:hover { background-color: #0056b3; }
+        .category { 
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        .category h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SEO Analysis Report</h1>
+            <p>Analysis Date: {{ seo_data['Analysis Date'] }}</p>
+            <p>URL Analyzed: {{ seo_data['URL'] }}</p>
+        </header>
+
+        {% if 'Error' in seo_data %}
+        <div class="category error">
+            <h2>Error</h2>
+            <p>{{ seo_data['Error'] }}</p>
+        </div>
+        {% else %}
+
+            {% if 'Technical SEO' in seo_data %}
+            <div class="category">
+                <h2>Technical SEO</h2>
+                <div class="metric">
+                    <h3>Page Load Time</h3>
+                    <p>{{ seo_data['Technical SEO']['Page Load Time'] }}</p>
+                    <p>Rating: <span class="rating {{ seo_data['Technical SEO']['Load Time Rating']|lower }}">
+                        {{ seo_data['Technical SEO']['Load Time Rating'] }}
+                    </span></p>
+                    <p>Status Code: {{ seo_data['Technical SEO']['Status Code'] }}</p>
+                    <p>Response Size: {{ seo_data['Technical SEO']['Response Size'] }}</p>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if 'On-Page SEO' in seo_data %}
+            <div class="category">
+                <h2>On-Page SEO</h2>
+                <div class="metric">
+                    <h3>Title Tag</h3>
+                    <p>Content: {{ seo_data['On-Page SEO']['Title'] }}</p>
+                    <p>Length: {{ seo_data['On-Page SEO']['Title Length'] }} characters</p>
+                </div>
+                <div class="metric">
+                    <h3>Meta Description</h3>
+                    <p>Content: {{ seo_data['On-Page SEO']['Meta Description'] }}</p>
+                    <p>Length: {{ seo_data['On-Page SEO']['Meta Description Length'] }} characters</p>
+                </div>
+                <div class="metric">
+                    <h3>H1 Tags</h3>
+                    <p>Count: {{ seo_data['On-Page SEO']['H1 Count'] }}</p>
+                    {% if seo_data['On-Page SEO']['H1 Tags'] %}
+                    <div class="sub-metric">
+                        <p>First 3 H1 tags:</p>
+                        <ul>
+                        {% for tag in seo_data['On-Page SEO']['H1 Tags'] %}
+                            <li>{{ tag }}</li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if 'Content SEO' in seo_data %}
+            <div class="category">
+                <h2>Content SEO</h2>
+                <div class="metric">
+                    <p>Word Count: {{ seo_data['Content SEO']['Word Count'] }}</p>
+                    <p>Paragraph Count: {{ seo_data['Content SEO']['Paragraph Count'] }}</p>
+                    <p>Image Count: {{ seo_data['Content SEO']['Image Count'] }}</p>
+                    <p>Images with Alt Text: {{ seo_data['Content SEO']['Images with Alt Text'] }}</p>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if 'User Experience' in seo_data %}
+            <div class="category">
+                <h2>User Experience</h2>
+                <div class="metric">
+                    <p>Mobile Responsive: {{ seo_data['User Experience']['Mobile Responsive'] }}</p>
+                    <p>Total Links: {{ seo_data['User Experience']['Total Links'] }}</p>
+                    <p>Internal Links: {{ seo_data['User Experience']['Internal Links'] }}</p>
+                    <p>External Links: {{ seo_data['User Experience']['External Links'] }}</p>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if 'Security' in seo_data %}
+            <div class="category">
+                <h2>Security</h2>
+                <div class="metric">
+                    <p>HTTPS: {{ seo_data['Security']['HTTPS'] }}</p>
+                    <h3>Security Headers:</h3>
+                    <div class="sub-metric">
+                        {% for header, value in seo_data['Security']['Security Headers'].items() %}
+                        <p><strong>{{ header }}:</strong> {{ value }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if 'Security Warning' in seo_data %}
+            <div class="category">
+                <div class="metric warning">
+                    <h3>Security Warning</h3>
+                    <p>{{ seo_data['Security Warning'] }}</p>
+                </div>
+            </div>
+            {% endif %}
+
+        {% endif %}
+
+        <div class="actions">
+            <a href="{{ url_for('download_file', filename=pdf_filename) }}" class="button">Download PDF Report</a>
+            <a href="/" class="button">Analyze Another URL</a>
+        </div>
+    </div>
+</body>
+</html>
