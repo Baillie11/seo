@@ -1,88 +1,171 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Click Ecommerce SEO Analysis</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
-<body>
-    <header>
-        <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Company Logo" class="site-logo">
-        <h1>Click Ecommerce SEO Analysis</h1>
-    </header>
-    
-    <div class="form-container">
-        <form method="POST" id="seo-form">
-            <label for="url">Enter Website URL:</label>
-            <input type="text" name="url" id="url-input" required>
-            
-            <fieldset class="checklist">
-                <legend>Select SEO Categories to Analyze:</legend>
-                <label><input type="checkbox" name="categories" value="Technical SEO" checked> Technical SEO <span class="checkmark"></span></label>
-                <label><input type="checkbox" name="categories" value="On-Page SEO" checked> On-Page SEO <span class="checkmark"></span></label>
-                <label><input type="checkbox" name="categories" value="Content SEO" checked> Content SEO <span class="checkmark"></span></label>
-                <label><input type="checkbox" name="categories" value="User Experience" checked> User Experience (UX) <span class="checkmark"></span></label>
-                <label><input type="checkbox" name="categories" value="Security" checked> Security <span class="checkmark"></span></label>
-                <label><input type="checkbox" name="categories" value="Schema Markup" checked> Schema & Social Media <span class="checkmark"></span></label>
-                <label><input type="checkbox" name="categories" value="Advanced Content" checked> Advanced Content Analysis <span class="checkmark"></span></label>
-            </fieldset>
-            
-            <button type="submit" class="submit-button">Analyze</button>
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card shadow-sm">
+    <div class="card-body p-4">
+        <form method="POST" action="{{ url_for('index') }}" id="seoForm">
+            <div class="mb-4">
+                <label for="url" class="form-label">Website URL</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-globe"></i></span>
+                    <input type="text" class="form-control" id="url" name="url" required 
+                           placeholder="Enter website URL (e.g., www.example.com or https://example.com)"
+                           pattern="^(https?:\/\/)?([\w\-]+(\.[\w\-]+)+)(\/.*)?$"
+                           title="Enter a valid URL (with or without http://)">
+                </div>
+                <div class="form-text">You can enter the URL with or without http:// (e.g., www.example.com)</div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">Analysis Categories</label>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" name="categories" value="Technical SEO" id="technicalSEO" checked>
+                            <label class="form-check-label" for="technicalSEO">Technical SEO</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" name="categories" value="On-Page SEO" id="onPageSEO" checked>
+                            <label class="form-check-label" for="onPageSEO">On-Page SEO</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" name="categories" value="Content SEO" id="contentSEO" checked>
+                            <label class="form-check-label" for="contentSEO">Content SEO</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="categories" value="User Experience" id="userExperience" checked>
+                            <label class="form-check-label" for="userExperience">User Experience</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" name="categories" value="Security" id="security" checked>
+                            <label class="form-check-label" for="security">Security</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" name="categories" value="Schema Markup" id="schemaMarkup" checked>
+                            <label class="form-check-label" for="schemaMarkup">Schema Markup</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="categories" value="Advanced Content" id="advancedContent" checked>
+                            <label class="form-check-label" for="advancedContent">Advanced Content</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4 border-primary">
+                <div class="card-header bg-primary bg-opacity-10">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="enableEnhancedAnalysis" name="enhanced_analysis">
+                        <label class="form-check-label" for="enableEnhancedAnalysis">
+                            Enable Enhanced Analysis
+                        </label>
+                    </div>
+                </div>
+                <div class="card-body enhanced-options" style="display: none;">
+                    <div class="mb-3">
+                        <label for="competitors" class="form-label">Competitor URLs</label>
+                        <textarea class="form-control" id="competitors" name="competitor_urls" rows="3" 
+                                placeholder="www.competitor1.com&#10;www.competitor2.com"></textarea>
+                        <div class="form-text">Enter one URL per line (with or without http://)</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="keywords" class="form-label">Target Keywords</label>
+                        <input type="text" class="form-control" id="keywords" name="keywords" 
+                               placeholder="keyword1, keyword2, keyword3">
+                        <div class="form-text">Separate keywords with commas</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary btn-lg px-5" id="analyzeButton">
+                    <span class="spinner-border spinner-border-sm d-none me-2" role="status" aria-hidden="true"></span>
+                    Analyze Website
+                </button>
+            </div>
         </form>
     </div>
+</div>
 
-    <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loading-overlay">
-        <div class="loading-spinner"></div>
-        <div class="loading-text">Analyzing website...</div>
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loading-overlay">
+    <div class="loading-content">
+        <div class="spinner-grow text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <h3 class="mt-4 mb-3">Analyzing website...</h3>
         <div class="analysis-steps">
-            <div class="analysis-step" data-step="technical">Analyzing Technical SEO...</div>
-            <div class="analysis-step" data-step="onpage">Checking On-Page Elements...</div>
-            <div class="analysis-step" data-step="content">Analyzing Content...</div>
-            <div class="analysis-step" data-step="ux">Evaluating User Experience...</div>
-            <div class="analysis-step" data-step="security">Checking Security...</div>
-            <div class="analysis-step" data-step="schema">Analyzing Schema Markup...</div>
-            <div class="analysis-step" data-step="advanced">Performing Advanced Analysis...</div>
+            <div class="analysis-step" data-step="technical">
+                <span class="step-icon">🔍</span> Analyzing Technical SEO...
+            </div>
+            <div class="analysis-step" data-step="onpage">
+                <span class="step-icon">📝</span> Checking On-Page Elements...
+            </div>
+            <div class="analysis-step" data-step="content">
+                <span class="step-icon">📊</span> Analyzing Content...
+            </div>
+            <div class="analysis-step" data-step="ux">
+                <span class="step-icon">👥</span> Evaluating User Experience...
+            </div>
+            <div class="analysis-step" data-step="security">
+                <span class="step-icon">🔒</span> Checking Security...
+            </div>
+            <div class="analysis-step" data-step="schema">
+                <span class="step-icon">🏷️</span> Analyzing Schema Markup...
+            </div>
+            <div class="analysis-step" data-step="advanced">
+                <span class="step-icon">⚡</span> Performing Advanced Analysis...
+            </div>
         </div>
     </div>
+</div>
+{% endblock %}
 
-    <script>
-        document.getElementById('seo-form').addEventListener('submit', function(e) {
-            // Show loading overlay
-            const overlay = document.getElementById('loading-overlay');
-            overlay.style.display = 'flex';
+{% block extra_js %}
+<script>
+    document.getElementById('enableEnhancedAnalysis').addEventListener('change', function() {
+        const enhancedOptions = document.querySelector('.enhanced-options');
+        enhancedOptions.style.display = this.checked ? 'block' : 'none';
+    });
 
-            // Get selected categories
-            const selectedCategories = Array.from(document.querySelectorAll('input[name="categories"]:checked'))
-                .map(cb => cb.value);
-
-            // Show relevant steps based on selected categories
-            document.querySelectorAll('.analysis-step').forEach(step => {
-                step.style.display = 'none';
-            });
-
-            // Function to show steps in sequence
-            function showStepsSequentially(steps, index = 0) {
-                if (index < steps.length) {
-                    steps[index].classList.add('active');
-                    setTimeout(() => {
-                        showStepsSequentially(steps, index + 1);
-                    }, 1000); // Show each step after 1 second
-                }
+    // URL input handling
+    document.getElementById('url').addEventListener('input', function() {
+        let url = this.value.trim();
+        if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
+            if (url.startsWith('www.')) {
+                url = 'https://' + url;
+            } else {
+                url = 'https://www.' + url;
             }
+        }
+        this.value = url;
+    });
 
-            // Get only the steps for selected categories
-            const relevantSteps = Array.from(document.querySelectorAll('.analysis-step'))
-                .filter(step => {
-                    const category = step.getAttribute('data-step');
-                    return selectedCategories.some(selected => 
-                        selected.toLowerCase().includes(category.toLowerCase()));
-                });
-
-            showStepsSequentially(relevantSteps);
-        });
-    </script>
-</body>
-</html>
+    document.getElementById('seoForm').addEventListener('submit', function() {
+        const button = document.getElementById('analyzeButton');
+        const spinner = button.querySelector('.spinner-border');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        
+        button.disabled = true;
+        spinner.classList.remove('d-none');
+        loadingOverlay.style.display = 'flex';
+        
+        // Simulate progress through analysis steps
+        const steps = document.querySelectorAll('.analysis-step');
+        let currentStep = 0;
+        
+        function updateSteps() {
+            if (currentStep < steps.length) {
+                steps[currentStep].classList.add('active');
+                currentStep++;
+                setTimeout(updateSteps, 1000);
+            }
+        }
+        
+        setTimeout(updateSteps, 500);
+    });
+</script>
+{% endblock %}
 
