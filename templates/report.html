@@ -303,7 +303,11 @@
                             <i class="bi bi-download"></i> Download PDF Report
                         </a>
                     {% else %}
-                        <button type="button" class="btn btn-secondary" disabled>
+                        <button type="button" class="btn btn-secondary" 
+                                data-bs-toggle="tooltip" 
+                                data-bs-placement="bottom" 
+                                title="{% if pdf_error %}{{ pdf_error }}{% else %}PDF Generation Failed{% endif %}"
+                                disabled>
                             <i class="bi bi-exclamation-circle"></i> PDF Generation Failed
                         </button>
                     {% endif %}

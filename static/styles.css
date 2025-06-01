@@ -139,28 +139,80 @@ label {
     padding: 2rem;
     border-radius: 1rem;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 90%;
 }
 
 .analysis-steps {
     margin-top: 2rem;
     text-align: left;
+    max-height: 60vh;
+    overflow-y: auto;
+    padding-right: 1rem;
 }
 
 .analysis-step {
-    padding: 0.5rem;
+    padding: 0.75rem 1rem;
     margin: 0.5rem 0;
     opacity: 0.5;
-    transition: opacity 0.3s ease;
+    transition: all 0.3s ease;
+    border-radius: 0.5rem;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
 }
 
 .analysis-step.active {
     opacity: 1;
     color: #0d6efd;
+    background: #e7f1ff;
+    transform: translateX(10px);
 }
 
 .step-icon {
-    margin-right: 0.5rem;
+    margin-right: 1rem;
     font-size: 1.2em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+}
+
+.enhanced-step {
+    display: none;
+    border-left: 3px solid #0d6efd;
+}
+
+.enhanced-step.active {
+    background: #e3f2fd;
+    color: #0d6efd;
+}
+
+/* Add a subtle separator between basic and enhanced steps */
+.enhanced-step:first-of-type {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px dashed #dee2e6;
+}
+
+/* Scrollbar styling for the steps container */
+.analysis-steps::-webkit-scrollbar {
+    width: 8px;
+}
+
+.analysis-steps::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.analysis-steps::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.analysis-steps::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }
 
 /* Authentication styles */

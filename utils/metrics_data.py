@@ -29,7 +29,18 @@ metrics_guide = {
             "good": "Present and properly configured",
             "warning": "Present but needs optimization",
             "bad": "Missing or blocking important content",
-            "why": "Helps search engines understand which pages to index."
+            "why": "Helps search engines understand which pages to index.",
+            "creation_info": "If missing, we can help create a robots.txt file with recommended settings.",
+            "auto_creation": "The tool can attempt to create a robots.txt file automatically, or provide you with the content to create it manually."
+        },
+        "Sitemap.xml": {
+            "description": "XML file listing all important pages on your site.",
+            "good": "Present and valid XML format",
+            "warning": "Present but invalid format",
+            "bad": "Missing",
+            "why": "Helps search engines discover and index all your pages efficiently.",
+            "creation_info": "If missing, we can generate a sitemap.xml based on your site's structure.",
+            "auto_creation": "The tool can attempt to create a sitemap.xml file automatically, or provide you with the content to create it manually."
         }
     },
     "On-Page SEO": {
@@ -138,6 +149,42 @@ metrics_guide = {
             "warning": "1.8-3s",
             "bad": "Over 3s",
             "why": "Affects perceived load speed and user experience."
+        }
+    },
+    "Ranking Analysis": {
+        "Google Index Status": {
+            "description": "Whether your site is indexed in Google's search results.",
+            "good": "Indexed",
+            "bad": "Not indexed",
+            "why": "Being indexed is essential for appearing in search results."
+        },
+        "Domain Authority": {
+            "description": "Moz's prediction of how well a website will rank on search engines.",
+            "good": "Above 50",
+            "warning": "20-50",
+            "bad": "Below 20",
+            "why": "Higher domain authority typically correlates with better search rankings."
+        },
+        "Page Authority": {
+            "description": "Prediction of how well a specific page will rank.",
+            "good": "Above 40",
+            "warning": "20-40",
+            "bad": "Below 20",
+            "why": "Higher page authority indicates better potential for ranking in search results."
+        },
+        "Social Signals": {
+            "description": "Presence and activity on major social media platforms.",
+            "good": "Active presence on multiple platforms",
+            "warning": "Limited social presence",
+            "bad": "No social presence",
+            "why": "Social signals can indirectly influence rankings and drive traffic."
+        },
+        "Traffic Estimates": {
+            "description": "Estimated monthly website traffic.",
+            "good": "Increasing trend",
+            "warning": "Stable",
+            "bad": "Decreasing trend",
+            "why": "Traffic trends can indicate site health and content effectiveness."
         }
     }
 } 

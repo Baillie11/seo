@@ -3,11 +3,13 @@ Main SEO Analysis Application
 Coordinates all SEO analysis modules and handles web requests.
 """
 
-from flask import Flask, render_template, request, send_from_directory, jsonify
+from flask import Flask, render_template, request, send_from_directory, jsonify, flash
 from bs4 import BeautifulSoup
 import requests
 from datetime import datetime
 import os
+from urllib.parse import urlparse
+import logging
 
 # Import models and database
 from models import db
@@ -22,7 +24,8 @@ from modules import (
     user_experience,
     security,
     schema_markup,
-    advanced_content
+    advanced_content,
+    rank_analysis
 )
 
 # Import utilities
@@ -40,6 +43,10 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialize extensions
 db.init_app(app)
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 def perform_seo_analysis(url, categories):
     """Coordinate the SEO analysis across all selected categories."""
@@ -76,6 +83,9 @@ def perform_seo_analysis(url, categories):
             
         if "Advanced Content" in categories:
             seo_data['Advanced Content'] = advanced_content.analyze(response, soup)
+
+        # Always include ranking analysis
+        seo_data['Ranking Analysis'] = rank_analysis.analyze(url)
 
     except requests.exceptions.SSLError:
         # Try HTTP if HTTPS fails
@@ -159,15 +169,29 @@ def index():
                 seo_data['enhanced_error'] = str(e)
         
         # Generate PDF report
+        pdf_filename = None
+        pdf_error = None
         try:
+            logger.info("Attempting to generate PDF report")
             pdf_filename = create_report(seo_data, selected_categories)
+            if pdf_filename:
+                logger.info(f"PDF report generated successfully: {pdf_filename}")
+                # Verify the file exists
+                reports_dir = os.path.join(app.root_path, 'reports')
+                if not os.path.exists(os.path.join(reports_dir, pdf_filename)):
+                    raise FileNotFoundError(f"Generated PDF file not found: {pdf_filename}")
+            else:
+                raise ValueError("PDF generation returned None")
         except Exception as e:
-            app.logger.error(f"Failed to generate PDF report: {str(e)}")
-            pdf_filename = None
+            error_msg = f"Failed to generate PDF report: {str(e)}"
+            logger.error(error_msg)
+            pdf_error = error_msg
+            flash("Failed to generate PDF report. You can still view the analysis results online.", "warning")
         
         return render_template('report.html', 
                              seo_data=seo_data, 
-                             pdf_filename=pdf_filename, 
+                             pdf_filename=pdf_filename,
+                             pdf_error=pdf_error,
                              categories=selected_categories)
     
     return render_template('index.html')
@@ -224,6 +248,106 @@ def enhanced_analysis():
     except Exception as e:
         return jsonify({
             'status': 'error',
+            'error': str(e)
+        }), 500
+
+@app.route('/create_robots_txt', methods=['POST'])
+def create_robots_txt():
+    """Create a robots.txt file for the specified domain."""
+    try:
+        data = request.get_json()
+        url = data.get('url')
+        content = data.get('content')
+        
+        if not url or not content:
+            return jsonify({
+                'status': 'error',
+                'message': 'URL and content are required'
+            }), 400
+            
+        # Parse the URL to get the domain
+        parsed_url = urlparse(url)
+        domain = parsed_url.netloc
+        
+        # Make a PUT request to create/update robots.txt
+        robots_url = f"{parsed_url.scheme}://{domain}/robots.txt"
+        
+        # First check if we have write access
+        try:
+            response = requests.put(robots_url, data=content)
+            if response.status_code in [200, 201, 204]:
+                return jsonify({
+                    'status': 'success',
+                    'message': 'robots.txt created successfully'
+                })
+            else:
+                return jsonify({
+                    'status': 'error',
+                    'message': f'Failed to create robots.txt. Server returned status code: {response.status_code}',
+                    'details': 'You may need to manually create the file using the suggested content.'
+                }), 400
+        except requests.exceptions.RequestException as e:
+            return jsonify({
+                'status': 'error',
+                'message': 'Could not create robots.txt file automatically',
+                'details': 'You may need to manually create the file using the suggested content.',
+                'error': str(e)
+            }), 400
+            
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': 'An error occurred',
+            'error': str(e)
+        }), 500
+
+@app.route('/create_sitemap', methods=['POST'])
+def create_sitemap():
+    """Create a sitemap.xml file for the specified domain."""
+    try:
+        data = request.get_json()
+        url = data.get('url')
+        content = data.get('content')
+        
+        if not url or not content:
+            return jsonify({
+                'status': 'error',
+                'message': 'URL and content are required'
+            }), 400
+            
+        # Parse the URL to get the domain
+        parsed_url = urlparse(url)
+        domain = parsed_url.netloc
+        
+        # Make a PUT request to create/update sitemap.xml
+        sitemap_url = f"{parsed_url.scheme}://{domain}/sitemap.xml"
+        
+        # First check if we have write access
+        try:
+            response = requests.put(sitemap_url, data=content)
+            if response.status_code in [200, 201, 204]:
+                return jsonify({
+                    'status': 'success',
+                    'message': 'sitemap.xml created successfully'
+                })
+            else:
+                return jsonify({
+                    'status': 'error',
+                    'message': f'Failed to create sitemap.xml. Server returned status code: {response.status_code}',
+                    'details': 'You may need to manually create the file using the suggested content.'
+                }), 400
+        except requests.exceptions.RequestException as e:
+            return jsonify({
+                'status': 'error',
+                'message': 'Could not create sitemap.xml file automatically',
+                'details': 'You may need to manually create the file using the suggested content.',
+                'error': str(e)
+            }), 400
+            
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': 'An error occurred',
             'error': str(e)
         }), 500
 

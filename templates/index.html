@@ -14,6 +14,10 @@
                            title="Enter a valid URL (with or without http://)">
                 </div>
                 <div class="form-text">You can enter the URL with or without http:// (e.g., www.example.com)</div>
+                <div class="alert alert-info mt-2">
+                    <i class="bi bi-info-circle-fill me-2"></i>
+                    <small>Our analysis is non-intrusive and does not affect your website's Google Analytics statistics or search rankings. We use lightweight requests that don't impact your site's performance metrics.</small>
+                </div>
             </div>
 
             <div class="mb-4">
@@ -64,14 +68,27 @@
                     </div>
                 </div>
                 <div class="card-body enhanced-options" style="display: none;">
+                    <div class="alert alert-info mb-3">
+                        <i class="bi bi-info-circle-fill me-2"></i>Enhanced analysis includes:
+                        <ul class="mb-0 mt-2">
+                            <li>AI-powered SEO recommendations</li>
+                            <li>Detailed mobile-friendliness testing</li>
+                            <li>Advanced speed insights and performance metrics</li>
+                            <li>Competitor analysis (optional)</li>
+                            <li>Keyword optimization suggestions (optional)</li>
+                        </ul>
+                    </div>
+                    <div class="alert alert-light border mb-3">
+                        <i class="bi bi-lightbulb-fill me-2"></i>You can use competitor analysis, keyword analysis, or both. Feel free to fill in either or both sections below.
+                    </div>
                     <div class="mb-3">
-                        <label for="competitors" class="form-label">Competitor URLs</label>
+                        <label for="competitors" class="form-label">Competitor URLs (Optional)</label>
                         <textarea class="form-control" id="competitors" name="competitor_urls" rows="3" 
                                 placeholder="www.competitor1.com&#10;www.competitor2.com"></textarea>
                         <div class="form-text">Enter one URL per line (with or without http://)</div>
                     </div>
                     <div class="mb-3">
-                        <label for="keywords" class="form-label">Target Keywords</label>
+                        <label for="keywords" class="form-label">Target Keywords (Optional)</label>
                         <input type="text" class="form-control" id="keywords" name="keywords" 
                                placeholder="keyword1, keyword2, keyword3">
                         <div class="form-text">Separate keywords with commas</div>
@@ -97,6 +114,7 @@
         </div>
         <h3 class="mt-4 mb-3">Analyzing website...</h3>
         <div class="analysis-steps">
+            <!-- Basic Analysis Steps -->
             <div class="analysis-step" data-step="technical">
                 <span class="step-icon">🔍</span> Analyzing Technical SEO...
             </div>
@@ -118,16 +136,101 @@
             <div class="analysis-step" data-step="advanced">
                 <span class="step-icon">⚡</span> Performing Advanced Analysis...
             </div>
+            
+            <!-- Enhanced Analysis Steps -->
+            <div class="analysis-step enhanced-step" data-step="robots">
+                <span class="step-icon">🤖</span> Checking Robots.txt Configuration...
+            </div>
+            <div class="analysis-step enhanced-step" data-step="sitemap">
+                <span class="step-icon">🗺️</span> Analyzing Sitemap.xml...
+            </div>
+            <div class="analysis-step enhanced-step" data-step="mobile">
+                <span class="step-icon">📱</span> Testing Mobile Friendliness...
+            </div>
+            <div class="analysis-step enhanced-step" data-step="speed">
+                <span class="step-icon">⚡</span> Analyzing Page Speed...
+            </div>
+            <div class="analysis-step enhanced-step" data-step="competitors">
+                <span class="step-icon">🔄</span> Comparing with Competitors...
+            </div>
+            <div class="analysis-step enhanced-step" data-step="keywords">
+                <span class="step-icon">🎯</span> Analyzing Keywords...
+            </div>
+            <div class="analysis-step enhanced-step" data-step="resources">
+                <span class="step-icon">📦</span> Checking Resource Optimization...
+            </div>
+            <div class="analysis-step enhanced-step" data-step="recommendations">
+                <span class="step-icon">💡</span> Generating AI Recommendations...
+            </div>
         </div>
     </div>
 </div>
+
+<!-- Modal for robots.txt creation -->
+<div class="modal fade" id="robotsTxtModal" tabindex="-1" aria-labelledby="robotsTxtModalLabel" aria-hidden="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="robotsTxtModalLabel">Create robots.txt</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <p>A robots.txt file was not found on your website. Would you like to create one?</p>
+                    <p>Below is a suggested configuration that you can modify:</p>
+                </div>
+                <div class="form-group">
+                    <label for="robotsTxtContent">robots.txt content:</label>
+                    <textarea class="form-control" id="robotsTxtContent" rows="10"></textarea>
+                </div>
+                <div id="robotsCreationResult" class="mt-3"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="createRobotsTxt">Create robots.txt</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for sitemap.xml creation -->
+<div class="modal fade" id="sitemapModal" tabindex="-1" aria-labelledby="sitemapModalLabel" aria-hidden="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="sitemapModalLabel">Create sitemap.xml</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <p>A sitemap.xml file was not found on your website. Would you like to create one?</p>
+                    <p>Below is a suggested configuration based on the URLs found on your page:</p>
+                </div>
+                <div class="form-group">
+                    <label for="sitemapContent">sitemap.xml content:</label>
+                    <textarea class="form-control font-monospace" id="sitemapContent" rows="15"></textarea>
+                </div>
+                <div id="sitemapCreationResult" class="mt-3"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="createSitemap">Create sitemap.xml</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block extra_js %}
 <script>
     document.getElementById('enableEnhancedAnalysis').addEventListener('change', function() {
         const enhancedOptions = document.querySelector('.enhanced-options');
+        const enhancedSteps = document.querySelectorAll('.enhanced-step');
         enhancedOptions.style.display = this.checked ? 'block' : 'none';
+        enhancedSteps.forEach(step => {
+            step.style.display = this.checked ? 'block' : 'none';
+        });
     });
 
     // URL input handling
@@ -147,25 +250,165 @@
         const button = document.getElementById('analyzeButton');
         const spinner = button.querySelector('.spinner-border');
         const loadingOverlay = document.getElementById('loading-overlay');
+        const isEnhancedEnabled = document.getElementById('enableEnhancedAnalysis').checked;
         
         button.disabled = true;
         spinner.classList.remove('d-none');
         loadingOverlay.style.display = 'flex';
         
-        // Simulate progress through analysis steps
-        const steps = document.querySelectorAll('.analysis-step');
+        // Get all visible steps
+        const steps = Array.from(document.querySelectorAll('.analysis-step')).filter(step => {
+            if (step.classList.contains('enhanced-step')) {
+                return isEnhancedEnabled;
+            }
+            return true;
+        });
+        
         let currentStep = 0;
         
         function updateSteps() {
             if (currentStep < steps.length) {
                 steps[currentStep].classList.add('active');
                 currentStep++;
-                setTimeout(updateSteps, 1000);
+                setTimeout(updateSteps, Math.random() * 500 + 500); // Random delay between 500ms and 1000ms
             }
         }
         
         setTimeout(updateSteps, 500);
     });
+
+    function showRobotsTxtCreation(url, content) {
+        const modal = new bootstrap.Modal(document.getElementById('robotsTxtModal'));
+        document.getElementById('robotsTxtContent').value = content;
+        
+        document.getElementById('createRobotsTxt').onclick = async function() {
+            const resultDiv = document.getElementById('robotsCreationResult');
+            const content = document.getElementById('robotsTxtContent').value;
+            
+            try {
+                const response = await fetch('/create_robots_txt', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        url: url,
+                        content: content
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-success">
+                            <p>${result.message}</p>
+                        </div>
+                    `;
+                    setTimeout(() => modal.hide(), 2000);
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-warning">
+                            <p>${result.message}</p>
+                            <p>${result.details || ''}</p>
+                            <hr>
+                            <p class="mb-0">You can copy the content above and create the robots.txt file manually.</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <p>An error occurred: ${error.message}</p>
+                        <hr>
+                        <p class="mb-0">You can copy the content above and create the robots.txt file manually.</p>
+                    </div>
+                `;
+            }
+        };
+        
+        modal.show();
+    }
+
+    function showSitemapCreation(url, content) {
+        const modal = new bootstrap.Modal(document.getElementById('sitemapModal'));
+        document.getElementById('sitemapContent').value = content;
+        
+        document.getElementById('createSitemap').onclick = async function() {
+            const resultDiv = document.getElementById('sitemapCreationResult');
+            const content = document.getElementById('sitemapContent').value;
+            
+            try {
+                const response = await fetch('/create_sitemap', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        url: url,
+                        content: content
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-success">
+                            <p>${result.message}</p>
+                        </div>
+                    `;
+                    setTimeout(() => modal.hide(), 2000);
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-warning">
+                            <p>${result.message}</p>
+                            <p>${result.details || ''}</p>
+                            <hr>
+                            <p class="mb-0">You can copy the content above and create the sitemap.xml file manually.</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <p>An error occurred: ${error.message}</p>
+                        <hr>
+                        <p class="mb-0">You can copy the content above and create the sitemap.xml file manually.</p>
+                    </div>
+                `;
+            }
+        };
+        
+        modal.show();
+    }
+
+    // Modify the existing analysis results handler
+    function displayAnalysisResults(data) {
+        // ... existing code ...
+        
+        // Check if robots.txt needs to be created
+        if (data['Technical SEO'] && 
+            data['Technical SEO']['Robots.txt'] && 
+            data['Technical SEO']['Robots.txt'].needs_creation && 
+            data['Technical SEO']['Robots.txt'].suggested_content) {
+            showRobotsTxtCreation(
+                data.URL, 
+                data['Technical SEO']['Robots.txt'].suggested_content
+            );
+        }
+        
+        // Check if sitemap.xml needs to be created
+        if (data['Technical SEO'] && 
+            data['Technical SEO']['Sitemap.xml'] && 
+            data['Technical SEO']['Sitemap.xml'].needs_creation && 
+            data['Technical SEO']['Sitemap.xml'].suggested_content) {
+            showSitemapCreation(
+                data.URL, 
+                data['Technical SEO']['Sitemap.xml'].suggested_content
+            );
+        }
+    }
 </script>
 {% endblock %}
 
