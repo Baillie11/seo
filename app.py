@@ -3,13 +3,43 @@ Main SEO Analysis Application
 Coordinates all SEO analysis modules and handles web requests.
 """
 
-from flask import Flask, render_template, request, send_from_directory, jsonify, flash
+from flask import Flask, render_template, request, send_from_directory, jsonify, flash, redirect, url_for
 from bs4 import BeautifulSoup
 import requests
 from datetime import datetime
 import os
 from urllib.parse import urlparse
 import logging
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
+import re
+import nltk
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+import string
+from dotenv import load_dotenv
+import urllib3
+import json
+import time
+import random
+import traceback
+from urllib.parse import urljoin
+import concurrent.futures
+from concurrent.futures import ThreadPoolExecutor
+import threading
+from queue import Queue
+import sys
+from io import StringIO
+import contextlib
+import tempfile
+import shutil
+from pathlib import Path
+import platform
+import socket
+import ssl
+from urllib.error import URLError
+import validators
 
 # Import models and database
 from models import db
@@ -52,12 +82,23 @@ def perform_seo_analysis(url, categories):
     """Coordinate the SEO analysis across all selected categories."""
     seo_data = {'URL': url, 'Analysis Date': datetime.now().strftime("%Y-%m-%d")}
     
+    # URL validation check
+    if not validators.url(url):
+        seo_data['Error'] = "Invalid URL format. Please enter a valid URL (e.g., https://example.com)"
+        return seo_data
+    
     # Add scheme if missing
     if not url.startswith(('http://', 'https://')):
         url = 'https://' + url
         seo_data['URL'] = url
 
     try:
+        # Check if website is accessible
+        response = requests.head(url, timeout=5, allow_redirects=True)
+        if response.status_code >= 400:
+            seo_data['Error'] = f"Website is not accessible. Status code: {response.status_code}"
+            return seo_data
+            
         # Make initial request to get the page content
         response = requests.get(url, timeout=20, allow_redirects=True)
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -114,6 +155,24 @@ def index():
     if request.method == 'POST':
         url = request.form['url']
         selected_categories = request.form.getlist('categories')
+        
+        # URL validation check
+        if not validators.url(url):
+            flash('Invalid URL format. Please enter a valid URL (e.g., https://example.com)', 'error')
+            return redirect(url_for('index'))
+            
+        # Check if website is accessible
+        try:
+            response = requests.head(url, timeout=5, allow_redirects=True)
+            if response.status_code >= 400:
+                flash(f'Website is not accessible. Status code: {response.status_code}', 'error')
+                return redirect(url_for('index'))
+        except requests.RequestException as e:
+            flash(f'Cannot connect to website: {str(e)}', 'error')
+            return redirect(url_for('index'))
+            
+        # If we get here, the URL is valid and the site is accessible
+        flash('Website is valid and accessible. Starting analysis...', 'success')
         
         # Perform basic SEO analysis
         seo_data = perform_seo_analysis(url, selected_categories)
@@ -350,6 +409,36 @@ def create_sitemap():
             'message': 'An error occurred',
             'error': str(e)
         }), 500
+
+@app.route('/analyze', methods=['POST'])
+@login_required
+def analyze():
+    try:
+        url = request.form.get('url', '').strip()
+        
+        # URL validation check
+        if not validators.url(url):
+            flash('Invalid URL format. Please enter a valid URL (e.g., https://example.com)', 'error')
+            return redirect(url_for('dashboard'))
+            
+        # Check if website is accessible
+        try:
+            response = requests.head(url, timeout=5, allow_redirects=True)
+            if response.status_code >= 400:
+                flash(f'Website is not accessible. Status code: {response.status_code}', 'error')
+                return redirect(url_for('dashboard'))
+        except requests.RequestException as e:
+            flash(f'Cannot connect to website: {str(e)}', 'error')
+            return redirect(url_for('dashboard'))
+            
+        # If we get here, the URL is valid and the site is accessible
+        flash('Website is valid and accessible. Starting analysis...', 'success')
+        
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+        
+        # ... existing code ...
 
 if __name__ == '__main__':
     with app.app_context():
