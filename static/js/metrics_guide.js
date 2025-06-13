@@ -2,10 +2,12 @@ const metricsGuide = {
     "Technical SEO": {
         "Load Time": {
             "description": "The time it takes for your page to fully load.",
-            "good": "Under 3 seconds",
-            "warning": "3-5 seconds",
-            "bad": "Over 5 seconds",
-            "why": "Faster loading times improve user experience and SEO rankings."
+            "excellent": "Under 1 second",
+            "good": "1-2 seconds",
+            "warning": "2-3 seconds",
+            "poor": "3-5 seconds",
+            "critical": "Over 5 seconds",
+            "why": "Faster loading times improve user experience and SEO rankings. Google considers page speed as a ranking factor. Modern users expect pages to load almost instantly. Performance ratings: Excellent (<1s) - Instant loading, ideal for user engagement; Good (1-2s) - Fast loading, good user experience; Warning (2-3s) - Acceptable but could be improved; Poor (3-5s) - Slow loading, impacts user experience; Critical (>5s) - Very slow, needs immediate optimization."
         },
         "Mobile Friendly": {
             "description": "Whether your site works well on mobile devices.",

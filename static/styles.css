@@ -337,3 +337,38 @@ body {
     margin-top: auto;
     border-top: 1px solid #dee2e6;
 }
+
+/* Load Time Rating Styles */
+.metric-status {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    margin-left: 0.5rem;
+    font-weight: 500;
+}
+
+.metric-status.excellent {
+    background-color: #198754;
+    color: white;
+}
+
+.metric-status.good {
+    background-color: #0dcaf0;
+    color: #000;
+}
+
+.metric-status.warning {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.metric-status.poor {
+    background-color: #fd7e14;
+    color: white;
+}
+
+.metric-status.critical {
+    background-color: #dc3545;
+    color: white;
+}

@@ -21,7 +21,7 @@
                 </tr>
                 <tr>
                     <td>Load Time</td>
-                    <td>{{ analysis.summary.load_time.main }}</td>
+                    <td>{{ analysis.summary.load_time.main }}s <span class="metric-status {{ analysis.summary.load_time.rating|lower }}">{{ analysis.summary.load_time.rating }}</span></td>
                     <td>{{ "%.2f"|format(analysis.summary.load_time.avg_competitors) }}s</td>
                 </tr>
             </tbody>
@@ -70,8 +70,8 @@
             </div>
             <p class="mb-1">{{ item.message }}</p>
         </li>
-        {% endfor %}
-    </ul>
+            {% endfor %}
+        </ul>
     {% endfor %}
 {% endmacro %}
 
@@ -242,21 +242,32 @@
     border-radius: 0.25rem;
     font-size: 0.875rem;
     margin-left: 0.5rem;
+    font-weight: 500;
+}
+
+.metric-status.excellent {
+    background-color: #198754;
+    color: white;
 }
 
 .metric-status.good {
-    background-color: #d1e7dd;
-    color: #0f5132;
+    background-color: #0dcaf0;
+    color: #000;
 }
 
 .metric-status.warning {
-    background-color: #fff3cd;
-    color: #856404;
+    background-color: #ffc107;
+    color: #000;
 }
 
-.metric-status.bad {
-    background-color: #f8d7da;
-    color: #842029;
+.metric-status.poor {
+    background-color: #fd7e14;
+    color: white;
+}
+
+.metric-status.critical {
+    background-color: #dc3545;
+    color: white;
 }
 
 .metric-guide-table {

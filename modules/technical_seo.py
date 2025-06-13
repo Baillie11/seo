@@ -20,17 +20,19 @@ def check_robots_txt(url):
         response = requests.get(robots_url, timeout=10)
         if response.status_code == 200:
             content = response.text.lower()
-            if 'disallow: /' in content:
+            # Check for complete site blocking
+            if 'disallow: /' in content and not any(line.strip().startswith('allow: /') for line in content.splitlines()):
                 return {
                     "status": "warning",
-                    "message": "Present but blocking important content",
+                    "message": "Present but blocking all content",
                     "content": response.text,
                     "needs_creation": False
                 }
-            elif len(content.strip()) < 10:
+            # Check for sitemap reference
+            if 'sitemap:' not in content:
                 return {
                     "status": "warning",
-                    "message": "Present but needs optimization",
+                    "message": "Present but missing sitemap reference",
                     "content": response.text,
                     "needs_creation": False
                 }
@@ -214,12 +216,16 @@ def analyze(response, soup):
     elif sitemap_check.get('content'):
         results['Sitemap.xml']['content'] = sitemap_check['content']
     
-    # Add load time rating based on metrics guide thresholds
-    if load_time < 3:
+    # Add load time rating based on modern performance standards
+    if load_time < 1:
+        results['Load Time Rating'] = "Excellent"
+    elif load_time < 2:
         results['Load Time Rating'] = "Good"
-    elif load_time < 5:
+    elif load_time < 3:
         results['Load Time Rating'] = "Warning"
-    else:
+    elif load_time < 5:
         results['Load Time Rating'] = "Poor"
+    else:
+        results['Load Time Rating'] = "Critical"
         
     return results 
