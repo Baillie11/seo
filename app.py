@@ -40,6 +40,7 @@ import socket
 import ssl
 from urllib.error import URLError
 import validators
+import sqlite3
 
 # Import models and database
 from models import db
@@ -77,6 +78,58 @@ db.init_app(app)
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+def init_db():
+    conn = sqlite3.connect('usage_tracking.db')
+    c = conn.cursor()
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS scan_usage (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            url TEXT NOT NULL,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+            scan_type TEXT,
+            result_summary TEXT
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+def log_scan(url, scan_type, result_summary):
+    conn = sqlite3.connect('usage_tracking.db')
+    c = conn.cursor()
+    c.execute('''
+        INSERT INTO scan_usage (url, scan_type, result_summary)
+        VALUES (?, ?, ?)
+    ''', (url, scan_type, result_summary))
+    conn.commit()
+    conn.close()
+
+def get_usage_stats():
+    conn = sqlite3.connect('usage_tracking.db')
+    c = conn.cursor()
+    
+    # Get total scans
+    c.execute('SELECT COUNT(*) FROM scan_usage')
+    total_scans = c.fetchone()[0]
+    
+    # Get scans by type
+    c.execute('SELECT scan_type, COUNT(*) FROM scan_usage GROUP BY scan_type')
+    scans_by_type = dict(c.fetchall())
+    
+    # Get recent scans
+    c.execute('SELECT url, timestamp, scan_type FROM scan_usage ORDER BY timestamp DESC LIMIT 10')
+    recent_scans = c.fetchall()
+    
+    conn.close()
+    
+    return {
+        'total_scans': total_scans,
+        'scans_by_type': scans_by_type,
+        'recent_scans': recent_scans
+    }
+
+# Initialize database when app starts
+init_db()
 
 def perform_seo_analysis(url, categories):
     """Coordinate the SEO analysis across all selected categories."""
@@ -247,6 +300,10 @@ def index():
             pdf_error = error_msg
             flash("Failed to generate PDF report. You can still view the analysis results online.", "warning")
         
+        # Log the scan
+        result_summary = "Scan completed successfully"  # Replace with actual summary
+        log_scan(url, 'full', result_summary)
+        
         return render_template('report.html', 
                              seo_data=seo_data, 
                              pdf_filename=pdf_filename,
@@ -298,6 +355,10 @@ def enhanced_analysis():
             'mobile_analysis': analyze_mobile_friendliness(url),
             'speed_insights': analyze_speed(url)
         }
+        
+        # Log the scan
+        result_summary = "Scan completed successfully"  # Replace with actual summary
+        log_scan(url, 'enhanced', result_summary)
         
         return jsonify({
             'status': 'success',
@@ -455,6 +516,10 @@ def analyze():
             pdf_error = str(e)
             flash("Failed to generate PDF report. You can still view the analysis results online.", "warning")
         
+        # Log the scan
+        result_summary = "Scan completed successfully"  # Replace with actual summary
+        log_scan(url, 'full', result_summary)
+        
         return render_template('report.html', 
                              seo_data=seo_data, 
                              pdf_filename=pdf_filename,
@@ -464,6 +529,11 @@ def analyze():
     except Exception as e:
         flash(f"An error occurred during analysis: {str(e)}", "error")
         return redirect(url_for('dashboard'))
+
+@app.route('/usage-stats')
+def usage_stats():
+    stats = get_usage_stats()
+    return render_template('usage_stats.html', stats=stats)
 
 if __name__ == '__main__':
     with app.app_context():
