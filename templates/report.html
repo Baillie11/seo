@@ -542,5 +542,8 @@ Object.entries(metricsGuide).forEach(([category, metrics], index) => {
     `;
     accordion.insertAdjacentHTML('beforeend', categoryHtml);
 });
+
+// Debugging: Print category and key
+console.log("Category: {{ category }}, Key: {{ key }}");
 </script>
 {% endblock %}

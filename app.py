@@ -438,7 +438,32 @@ def analyze():
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         }
         
-        # ... existing code ...
+        # Get selected categories
+        selected_categories = request.form.getlist('categories')
+        if not selected_categories:
+            selected_categories = ['Technical SEO', 'On-Page SEO', 'Content SEO']
+        
+        # Perform SEO analysis
+        seo_data = perform_seo_analysis(url, selected_categories)
+        
+        # Generate PDF report
+        pdf_filename = None
+        pdf_error = None
+        try:
+            pdf_filename = generate_pdf_report(seo_data, url)
+        except Exception as e:
+            pdf_error = str(e)
+            flash("Failed to generate PDF report. You can still view the analysis results online.", "warning")
+        
+        return render_template('report.html', 
+                             seo_data=seo_data, 
+                             pdf_filename=pdf_filename,
+                             pdf_error=pdf_error,
+                             categories=selected_categories)
+                             
+    except Exception as e:
+        flash(f"An error occurred during analysis: {str(e)}", "error")
+        return redirect(url_for('dashboard'))
 
 if __name__ == '__main__':
     with app.app_context():

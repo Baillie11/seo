@@ -136,5 +136,60 @@ const metricsGuide = {
             "bad": "Over 3s",
             "why": "Affects perceived load speed and user experience."
         }
+    },
+    "Sitemap.xml": {
+        "description": "A sitemap helps search engines understand the structure of your website.",
+        "good": "A sitemap is present and correctly formatted.",
+        "bad": "No sitemap is present."
+    },
+    "Load Time rating": {
+        "description": "The time it takes for your page to load.",
+        "good": "Load time is under 3 seconds.",
+        "bad": "Load time is over 3 seconds."
+    },
+    "Paragraph Count": {
+        "description": "The number of paragraphs on the page.",
+        "good": "Adequate number of paragraphs for content depth.",
+        "bad": "Too few paragraphs, indicating thin content."
+    },
+    "Image Count": {
+        "description": "The number of images on the page.",
+        "good": "Images are used to enhance content.",
+        "bad": "No images or too many images without purpose."
+    },
+    "Images with Alt Text": {
+        "description": "Images should have alt text for accessibility and SEO.",
+        "good": "All images have descriptive alt text.",
+        "bad": "Images are missing alt text."
+    },
+    "Word Count": {
+        "description": "The total number of words on the page.",
+        "good": "Sufficient word count for comprehensive content.",
+        "bad": "Insufficient word count, indicating thin content."
+    },
+    "Top Keywords": {
+        "description": "The most frequently used keywords on the page.",
+        "good": "Keywords are relevant and naturally integrated.",
+        "bad": "Keywords are overused or irrelevant."
+    },
+    "Heading Structure": {
+        "description": "The hierarchy of headings on the page.",
+        "good": "Clear and logical heading structure.",
+        "bad": "Poor heading structure or missing headings."
+    },
+    "Content-to-HTML Ratio": {
+        "description": "The ratio of content to HTML code.",
+        "good": "High content-to-HTML ratio.",
+        "bad": "Low content-to-HTML ratio, indicating excessive code."
+    },
+    "Broken Links Found": {
+        "description": "Links that lead to non-existent pages.",
+        "good": "No broken links found.",
+        "bad": "Broken links are present."
+    },
+    "Broken Links": {
+        "description": "Links that lead to non-existent pages.",
+        "good": "No broken links found.",
+        "bad": "Broken links are present."
     }
 }; 
