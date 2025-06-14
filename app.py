@@ -91,6 +91,17 @@ def init_db():
             result_summary TEXT
         )
     ''')
+    
+    # Create subscribers table
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS subscribers (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            email TEXT UNIQUE NOT NULL,
+            feature_updates BOOLEAN DEFAULT 1,
+            seo_tips BOOLEAN DEFAULT 1,
+            subscribed_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
     conn.commit()
     conn.close()
 
@@ -534,6 +545,136 @@ def analyze():
 def usage_stats():
     stats = get_usage_stats()
     return render_template('usage_stats.html', stats=stats)
+
+def is_valid_email(email):
+    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    return re.match(pattern, email) is not None
+
+@app.route('/subscribe', methods=['POST'])
+def subscribe():
+    try:
+        data = request.get_json()
+        email = data.get('email')
+        feature_updates = data.get('featureUpdates', True)
+        seo_tips = data.get('seoTips', True)
+        
+        if not email:
+            return jsonify({'success': False, 'message': 'Email is required'}), 400
+            
+        if not is_valid_email(email):
+            return jsonify({'success': False, 'message': 'Please enter a valid email address'}), 400
+            
+        conn = sqlite3.connect('usage_tracking.db')
+        c = conn.cursor()
+        
+        try:
+            c.execute('''
+                INSERT INTO subscribers (email, feature_updates, seo_tips)
+                VALUES (?, ?, ?)
+            ''', (email, feature_updates, seo_tips))
+            conn.commit()
+            return jsonify({
+                'success': True,
+                'message': 'Thank you for subscribing! We\'ll keep you updated with the latest features.'
+            })
+        except sqlite3.IntegrityError:
+            return jsonify({
+                'success': False,
+                'message': 'This email is already subscribed.'
+            }), 400
+        finally:
+            conn.close()
+            
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': 'An error occurred. Please try again later.'
+        }), 500
+
+@app.route('/admin/subscribers')
+def view_subscribers():
+    try:
+        conn = sqlite3.connect('usage_tracking.db')
+        c = conn.cursor()
+        
+        # Get all subscribers
+        c.execute('''
+            SELECT id, email, feature_updates, seo_tips, subscribed_at
+            FROM subscribers
+            ORDER BY subscribed_at DESC
+        ''')
+        subscribers = c.fetchall()
+        
+        # Format the data
+        formatted_subscribers = []
+        for sub in subscribers:
+            formatted_subscribers.append({
+                'id': sub[0],
+                'email': sub[1],
+                'feature_updates': bool(sub[2]),
+                'seo_tips': bool(sub[3]),
+                'subscribed_at': sub[4]
+            })
+        
+        conn.close()
+        return render_template('subscribers.html', subscribers=formatted_subscribers)
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': 'An error occurred while fetching subscribers.'
+        }), 500
+
+@app.route('/admin/subscribers/<int:subscriber_id>', methods=['DELETE'])
+def delete_subscriber(subscriber_id):
+    try:
+        conn = sqlite3.connect('usage_tracking.db')
+        c = conn.cursor()
+        
+        c.execute('DELETE FROM subscribers WHERE id = ?', (subscriber_id,))
+        conn.commit()
+        conn.close()
+        
+        return jsonify({
+            'success': True,
+            'message': 'Subscriber removed successfully.'
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': 'An error occurred while removing the subscriber.'
+        }), 500
+
+@app.route('/admin/subscribers/<int:subscriber_id>', methods=['PUT'])
+def update_subscriber(subscriber_id):
+    try:
+        data = request.get_json()
+        feature_updates = data.get('featureUpdates', True)
+        seo_tips = data.get('seoTips', True)
+        
+        conn = sqlite3.connect('usage_tracking.db')
+        c = conn.cursor()
+        
+        c.execute('''
+            UPDATE subscribers
+            SET feature_updates = ?, seo_tips = ?
+            WHERE id = ?
+        ''', (feature_updates, seo_tips, subscriber_id))
+        
+        conn.commit()
+        conn.close()
+        
+        return jsonify({
+            'success': True,
+            'message': 'Subscriber preferences updated successfully.'
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': 'An error occurred while updating subscriber preferences.'
+        }), 500
 
 if __name__ == '__main__':
     with app.app_context():

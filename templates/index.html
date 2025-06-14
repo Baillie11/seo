@@ -1,6 +1,19 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="text-center mb-5">
+    <h1 class="display-4 mb-4">SEO Analysis Tool</h1>
+    <p class="lead">Analyze your website's SEO performance with our comprehensive tool.</p>
+    
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <strong>✨ New Features Daily!</strong> Stay ahead with the latest SEO tools and improvements.
+        <button type="button" class="btn btn-primary ms-3" data-bs-toggle="modal" data-bs-target="#subscribeModal">
+            Subscribe for Updates
+        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</div>
+
 <div class="card shadow-sm">
     <div class="card-body p-4">
         <form method="POST" action="{{ url_for('index') }}" id="seoForm">

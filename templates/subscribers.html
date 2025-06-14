@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">Subscriber Management</h2>
+    
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Feature Updates</th>
+                            <th>SEO Tips</th>
+                            <th>Subscribed At</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for subscriber in subscribers %}
+                        <tr id="subscriber-{{ subscriber.id }}">
+                            <td>{{ subscriber.email }}</td>
+                            <td>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input feature-updates" type="checkbox" 
+                                           {% if subscriber.feature_updates %}checked{% endif %}
+                                           onchange="updatePreferences({{ subscriber.id }}, 'featureUpdates', this.checked)">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input seo-tips" type="checkbox"
+                                           {% if subscriber.seo_tips %}checked{% endif %}
+                                           onchange="updatePreferences({{ subscriber.id }}, 'seoTips', this.checked)">
+                                </div>
+                            </td>
+                            <td>{{ subscriber.subscribed_at }}</td>
+                            <td>
+                                <button class="btn btn-danger btn-sm" onclick="deleteSubscriber({{ subscriber.id }})">
+                                    <i class="bi bi-trash"></i> Remove
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+async function updatePreferences(subscriberId, preference, value) {
+    try {
+        const response = await fetch(`/admin/subscribers/${subscriberId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                [preference]: value
+            })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            alert(data.message);
+        } else {
+            alert('Error updating preferences');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while updating preferences');
+    }
+}
+
+async function deleteSubscriber(subscriberId) {
+    if (!confirm('Are you sure you want to remove this subscriber?')) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`/admin/subscribers/${subscriberId}`, {
+            method: 'DELETE'
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            document.getElementById(`subscriber-${subscriberId}`).remove();
+            alert(data.message);
+        } else {
+            alert('Error removing subscriber');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while removing the subscriber');
+    }
+}
+</script>
+{% endblock %} 
