@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">Meta Tag Generator</h2>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form id="metaForm">
+                        <div class="mb-3">
+                            <label for="pageTitle" class="form-label">Page Title</label>
+                            <input type="text" class="form-control" id="pageTitle" maxlength="60" required>
+                            <div class="form-text">Recommended: 50-60 characters</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="metaDescription" class="form-label">Meta Description</label>
+                            <textarea class="form-control" id="metaDescription" rows="3" maxlength="160" required></textarea>
+                            <div class="form-text">Recommended: 150-160 characters</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="keywords" class="form-label">Keywords (comma-separated)</label>
+                            <input type="text" class="form-control" id="keywords">
+                            <div class="form-text">Separate keywords with commas</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="author" class="form-label">Author</label>
+                            <input type="text" class="form-control" id="author">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="robots" class="form-label">Robots Meta Tag</label>
+                            <select class="form-select" id="robots">
+                                <option value="index,follow">Index, Follow</option>
+                                <option value="noindex,follow">No Index, Follow</option>
+                                <option value="index,nofollow">Index, No Follow</option>
+                                <option value="noindex,nofollow">No Index, No Follow</option>
+                            </select>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Generate Meta Tags</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Generated Meta Tags</h5>
+                    <div class="mb-3">
+                        <label class="form-label">Preview</label>
+                        <div id="preview" class="border p-3 bg-light">
+                            <div id="titlePreview" class="text-primary"></div>
+                            <div id="urlPreview" class="text-success"></div>
+                            <div id="descriptionPreview" class="text-muted"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">HTML Code</label>
+                        <pre id="htmlCode" class="border p-3 bg-light"></pre>
+                    </div>
+                    
+                    <button class="btn btn-outline-primary" onclick="copyToClipboard()">
+                        <i class="bi bi-clipboard"></i> Copy to Clipboard
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('metaForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    generateMetaTags();
+});
+
+function generateMetaTags() {
+    const title = document.getElementById('pageTitle').value;
+    const description = document.getElementById('metaDescription').value;
+    const keywords = document.getElementById('keywords').value;
+    const author = document.getElementById('author').value;
+    const robots = document.getElementById('robots').value;
+    
+    // Generate HTML
+    let html = `<title>${escapeHtml(title)}</title>\n`;
+    html += `<meta name="description" content="${escapeHtml(description)}">\n`;
+    
+    if (keywords) {
+        html += `<meta name="keywords" content="${escapeHtml(keywords)}">\n`;
+    }
+    
+    if (author) {
+        html += `<meta name="author" content="${escapeHtml(author)}">\n`;
+    }
+    
+    html += `<meta name="robots" content="${robots}">\n`;
+    
+    // Update preview
+    document.getElementById('titlePreview').textContent = title;
+    document.getElementById('descriptionPreview').textContent = description;
+    
+    // Update HTML code
+    document.getElementById('htmlCode').textContent = html;
+}
+
+function escapeHtml(text) {
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function copyToClipboard() {
+    const htmlCode = document.getElementById('htmlCode').textContent;
+    navigator.clipboard.writeText(htmlCode).then(() => {
+        alert('Meta tags copied to clipboard!');
+    }).catch(err => {
+        console.error('Failed to copy text: ', err);
+    });
+}
+
+// Add character counter
+document.getElementById('pageTitle').addEventListener('input', function() {
+    const length = this.value.length;
+    this.nextElementSibling.textContent = `Recommended: 50-60 characters (${length}/60)`;
+});
+
+document.getElementById('metaDescription').addEventListener('input', function() {
+    const length = this.value.length;
+    this.nextElementSibling.textContent = `Recommended: 150-160 characters (${length}/160)`;
+});
+</script>
+{% endblock %} 

@@ -56,7 +56,8 @@ from modules import (
     security,
     schema_markup,
     advanced_content,
-    rank_analysis
+    rank_analysis,
+    meta_keywords
 )
 
 # Import utilities
@@ -188,6 +189,9 @@ def perform_seo_analysis(url, categories):
             
         if "Advanced Content" in categories:
             seo_data['Advanced Content'] = advanced_content.analyze(response, soup)
+            
+        if "Meta Keywords" in categories:
+            seo_data['Meta Keywords'] = meta_keywords.analyze(response, soup)
 
         # Always include ranking analysis
         seo_data['Ranking Analysis'] = rank_analysis.analyze(url)
@@ -675,6 +679,10 @@ def update_subscriber(subscriber_id):
             'success': False,
             'message': 'An error occurred while updating subscriber preferences.'
         }), 500
+
+@app.route('/meta-generator')
+def meta_generator():
+    return render_template('meta_generator.html')
 
 if __name__ == '__main__':
     with app.app_context():
